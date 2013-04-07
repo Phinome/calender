@@ -37,8 +37,8 @@ class Html {
                 $event_info = NULL;
                 if( isset($events[$c]))
                 {
-                    foreach ($events as $event) {
-                        $link = "<a href=\"view.php?event_id=". $event[0]->getID() ."\" >" . $event[0]->getTitle() . "</a>";
+                    foreach ($events[$c] as $event) {
+                        $link = "<a href=\"view.php?event_id=". $event->getID() ."\" >" . $event->getTitle() . "</a>";
                         $event_info .= "\n\t\t\t$link";
                     }
                 }
