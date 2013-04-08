@@ -26,7 +26,7 @@ else
     include_once '../sys/core/init.inc.php';
 
     $page_title = "View Event";
-    $css_files = array("default.css");
+    $css_files = array("default.css","admin.css");
     include_once 'header.inc.php';
 
     $cal = new Calender();

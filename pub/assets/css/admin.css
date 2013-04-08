@@ -63,6 +63,7 @@ input[type=submit]{
 
 .admin-options form , .admin-options p {
     display: inline;
+    padding:0 2px;
 }
 
 a.admin{

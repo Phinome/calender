@@ -11,6 +11,7 @@ class Html {
         $weekDays = array('Sun','Mon','Tue','Wed','Thu','Fri','Sat');
         
         $html = "\n\t<h2>$cal_month</h2>";
+        
         for( $d = 0 , $labels = NULL; $d < 7 ; ++$d)
         {
             $labels .="\n\t<li>". $weekDays[$d] ."</li>";
@@ -20,26 +21,29 @@ class Html {
         $events = $pro->__createEventObj();
         
         $html .= "\n\t<ul>";
+        
         for( $i =1 , $c=1 , $t = date('j'),$m = date('m'),$y=date('Y');$c <= $pro->getDays();++$i)
         {
-            $class = $i <= $pro->getStartDay() ? "fill" : NULL;
             
+            $class = $i <= $pro->getStartDay() ? "fill" : NULL;
+      
             if($c == $t && $m == $pro->getMonth() && $y == $pro->getYear())
             {
                 $class = "today";
             }    
-            
+
             $ls = sprintf("\n\t\t<li class=\"%s\">",$class);
             $le = "\n\t\t</li>";
             
-            if($pro->getStartDay()<$i && $pro->getDays() >= $c)
+            if($pro->getStartDay() <$i && $pro->getDays() >= $c)
             {
                 $event_info = NULL;
                 if( isset($events[$c]))
                 {
-                    foreach ($events[$c] as $event) {
+                    foreach ( $events[$c] as  $event ) {
                         $link = "<a href=\"view.php?event_id=". $event->getID() ."\" >" . $event->getTitle() . "</a>";
                         $event_info .= "\n\t\t\t$link";
+                        
                     }
                 }
                 $date = sprintf("\n\t\t\t<strong>%02d</strong>",$c++);
@@ -67,7 +71,8 @@ class Html {
     public function displayEvent($id , Calender $pro)
     {
         $rs = $pro->eventToHtml($id);
-        $str = "<h2>{$rs['title']}</h2>"."\n\t<p class=\"dates\">{$rs['date']} , {$rs['start']}&mdash;{$rs['end']}</p>" . "\n\t<p>{$rs['dec']}</p>";
+        $edit = $this->__adminEntryOptions($id);
+        $str = "<h2>{$rs['title']}</h2>"."\n\t<p class=\"dates\">{$rs['date']} , {$rs['start']}&mdash;{$rs['end']}</p>" . "\n\t<p>{$rs['dec']}</p>$edit";
         return $str;
     }
     
@@ -110,7 +115,7 @@ class Html {
                     <input type="radio" name="event_status" class="event_status" value="Pause" /><span>Pause</span>
                     <input type="radio" name="event_status" class="event_status" value="End" /><span>End</span>
                     <label for="event_end">Event Categroy</label>
-                    <input type="checkbox" name="event_cate" class="event_cate" value="" />One
+                    <input type="checkbox" name="event_cate" class="event_cate" value="{}" />One
                     <input type="checkbox" name="event_cate" class="event_cate" value="" />Two
                     <input type="checkbox" name="event_cate" class="event_cate" value="" />Three
                     <label for="event_dec">Event Description</label>
@@ -125,11 +130,31 @@ class Html {
 EOT;
     }
     
-    public function __adminGrneralOptions()
+    private function __adminGrneralOptions()
     {
         return <<<ADMIN_OPTIONS
         <a href="admin.php" class="admin">+Add a New Event</a>
         
+ADMIN_OPTIONS;
+    }
+    
+    private function __adminEntryOptions($id)
+    {
+        return <<<ADMIN_OPTIONS
+        <div class="admin-options">
+            <form action="admin.php" method="post">
+                <p>
+                    <input type="submit" name="edit_event" value="Edit" />
+                    <input type="hidden" name="event_id" value="{$id}" />
+                </p>
+            </form>
+            <form action="comfirmDelete.php method="post">
+                <p>
+                    <input type="submit" name="delete_event" value="Delete" />
+                    <input type="hidden" name="event_id" value="{$id}" />
+                </p>
+            </form>
+        </div>
 ADMIN_OPTIONS;
     }
 }
